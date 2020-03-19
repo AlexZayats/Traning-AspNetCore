@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using Traning.AspNetCore.EntityFramework.Data;
+using Traning.AspNetCore.EntityFramework.Logic.Interfaces;
 
 namespace Traning.AspNetCore.EntityFramework.API.Controllers
 {
@@ -10,17 +9,21 @@ namespace Traning.AspNetCore.EntityFramework.API.Controllers
     [Route("[controller]")]
     public class HomeController : ControllerBase
     {
-        private readonly IShopContext _shopContext;
+        private readonly IProductManager _productManager;
 
-        public HomeController(IShopContext shopContext)
+        public HomeController(IProductManager productManager)
         {
-            _shopContext = shopContext;
+            _productManager = productManager;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAsync(
+            [FromQuery] string search,
+            [FromQuery] int? fromIndex = default,
+            [FromQuery] int? toIndex = default,
+            CancellationToken cancellationToken = default)
         {
-            var result = await _shopContext.Products.ToArrayAsync(cancellationToken);
+            var result = await _productManager.GetProductsAsync(search, fromIndex, toIndex, cancellationToken);
             return Ok(result);
         }
     }

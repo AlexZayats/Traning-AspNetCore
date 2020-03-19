@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Traning.AspNetCore.EntityFramework.Data;
+using Traning.AspNetCore.EntityFramework.Logic.Interfaces;
+using Traning.AspNetCore.EntityFramework.Logic.Managers;
 
 namespace Traning.AspNetCore.EntityFramework.API
 {
@@ -22,6 +24,7 @@ namespace Traning.AspNetCore.EntityFramework.API
         {
             services.AddControllers();
             services.AddDbContext<IShopContext, ShopContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ShopContext")));
+            services.AddScoped<IProductManager, ProductManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

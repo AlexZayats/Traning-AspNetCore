@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Data\Traning.AspNetCore.EntityFramework.Data.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Logic\Traning.AspNetCore.EntityFramework.Logic.csproj" />
   </ItemGroup>
 
 

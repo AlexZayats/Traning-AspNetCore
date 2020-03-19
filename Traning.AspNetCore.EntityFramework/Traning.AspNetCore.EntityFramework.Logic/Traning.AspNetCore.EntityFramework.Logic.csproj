@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Data\Traning.AspNetCore.EntityFramework.Data.csproj" />
+  </ItemGroup>
+
+</Project>
