@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using Traning.AspNetCore.EntityFramework.Data;
-using Traning.AspNetCore.EntityFramework.Data.Models;
 
 namespace Traning.AspNetCore.EntityFramework.API
 {
@@ -26,16 +25,8 @@ namespace Traning.AspNetCore.EntityFramework.API
                 try
                 {
                     var context = (ShopContext)services.GetRequiredService<IShopContext>();
-                    if (context.Database.EnsureCreated())
-                    {
-                        context.Products.Add(new Product
-                        {
-                            Name = "Cool Product",
-                            Description = "Cool product!",
-                            Price = 1000
-                        });
-                        context.SaveChanges();
-                    }
+                    context.Database.Migrate();
+                    ShopContextInit.Init(context);
                 }
                 catch (Exception ex)
                 {
