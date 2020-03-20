@@ -9,6 +9,7 @@ namespace Traning.AspNetCore.EntityFramework.Data.Models
         public string Description { get; set; }
         public float Discount { get; set; }
         public float Price { get; set; }
+        public DateTime? SaleFrom { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

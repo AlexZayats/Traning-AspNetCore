@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using Traning.AspNetCore.EntityFramework.Data;
 using Traning.AspNetCore.EntityFramework.Data.Models;
 
@@ -20,6 +21,9 @@ namespace Traning.AspNetCore.EntityFramework.API
             modelBuilder.Entity<Product>()
                 .Property(x => x.Id)
                 .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Product>()
+                .Property(x => x.SaleFrom)
+                .HasConversion(x => x, x => x.HasValue ? DateTime.SpecifyKind(x.Value, DateTimeKind.Utc) : x);
             modelBuilder.Entity<Product>()
                 .HasQueryFilter(x => !x.IsDeleted);
         }
