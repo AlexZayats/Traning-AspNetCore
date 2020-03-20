@@ -28,6 +28,7 @@ namespace Traning.AspNetCore.EntityFramework.API
             services.AddControllers();
             services.AddDbContext<IShopContext, ShopContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ShopContext")));
             services.AddScoped<IProductManager, ProductManager>();
+            services.AddScoped<IProductReviewManager, ProductReviewManager>();
 
             services.AddSwaggerGen(c =>
             {

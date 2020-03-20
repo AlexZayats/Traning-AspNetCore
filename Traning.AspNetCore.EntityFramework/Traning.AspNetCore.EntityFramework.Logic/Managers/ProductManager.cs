@@ -50,13 +50,13 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
 
         public async Task<ProductDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default)
         {
-            var product = await _shopContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+            var product = await _shopContext.Products.Include(x => x.Reviews).AsNoTracking().FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
             return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<PagedResult<ProductDto>> GetProductsAsync(string search, int? fromIndex = null, int? toIndex = null, CancellationToken cancellationToken = default)
         {
-            var query = _shopContext.Products.AsQueryable();
+            var query = _shopContext.Products.AsNoTracking();
             if (!string.IsNullOrWhiteSpace(search))
             {
                 query = query.Where(x =>
@@ -67,15 +67,15 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
             {
                 query = query.Skip(fromIndex.Value);
             }
-
+            query = query.OrderBy(x => x.Name);
             var total = await query.CountAsync(cancellationToken);
             if (fromIndex.HasValue && toIndex.HasValue)
             {
                 query = query.Skip(fromIndex.Value).Take(toIndex.Value - fromIndex.Value + 1);
             }
-
-            var items = await query.ToArrayAsync(cancellationToken);
-            return new PagedResult<ProductDto> { Items = _mapper.Map<IEnumerable<ProductDto>>(items), Total = total };
+            
+            var items = await _mapper.ProjectTo<ProductDto>(query).ToArrayAsync(cancellationToken);
+            return new PagedResult<ProductDto> { Items = items, Total = total };
         }
 
         public async Task<ProductDto> UpdateProductAsync(ProductDto product, CancellationToken cancellationToken = default)

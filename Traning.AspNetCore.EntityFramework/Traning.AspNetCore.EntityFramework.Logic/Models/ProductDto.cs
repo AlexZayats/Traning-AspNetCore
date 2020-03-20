@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Traning.AspNetCore.EntityFramework.Logic.Models
 {
@@ -10,5 +11,6 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Models
         public float Discount { get; set; }
         public float Price { get; set; }
         public float TotalPrice => Price - Price * Discount / 100;
+        public IEnumerable<ProductReviewDto> Reviews { get; set; }
     }
 }

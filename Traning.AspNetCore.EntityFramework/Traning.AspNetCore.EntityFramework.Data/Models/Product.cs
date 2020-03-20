@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Traning.AspNetCore.EntityFramework.Data.Models
 {
@@ -11,5 +12,6 @@ namespace Traning.AspNetCore.EntityFramework.Data.Models
         public float Price { get; set; }
         public DateTime? SaleFrom { get; set; }
         public bool IsDeleted { get; set; }
+        public HashSet<ProductReview> Reviews { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace Traning.AspNetCore.EntityFramework.API
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductReview> ProductReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,16 @@ namespace Traning.AspNetCore.EntityFramework.API
                 .HasConversion(x => x, x => x.HasValue ? DateTime.SpecifyKind(x.Value, DateTimeKind.Utc) : x);
             modelBuilder.Entity<Product>()
                 .HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Product>()
+                .HasMany(x => x.Reviews)
+                .WithOne()
+                .HasForeignKey(x => x.ProductId);
+
+            modelBuilder.Entity<ProductReview>()
+                .HasKey(x => x.Id);
+            modelBuilder.Entity<ProductReview>()
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }
