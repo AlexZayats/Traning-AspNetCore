@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,13 +15,39 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
     public class ProductManager : IProductManager
     {
         private readonly IShopContext _shopContext;
+        private readonly IMapper _mapper;
 
-        public ProductManager(IShopContext shopContext)
+        public ProductManager(IShopContext shopContext, IMapper mapper)
         {
             _shopContext = shopContext;
+            _mapper = mapper;
         }
 
-        public async Task<PagedResult<Product>> GetProductsAsync(string search, int? fromIndex = null, int? toIndex = null, CancellationToken cancellationToken = default)
+        public async Task<ProductDto> CreateProductAsync(ProductDto product, CancellationToken cancellationToken = default)
+        {
+            var add = _mapper.Map<Product>(product);
+            _shopContext.Products.Add(add);
+            await _shopContext.SaveChangesAsync(cancellationToken);
+            return _mapper.Map<ProductDto>(product);
+        }
+
+        public async Task DeleteProductAsync(Guid productId, CancellationToken cancellationToken = default)
+        {
+            var product = await _shopContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+            if (product != null)
+            {
+                product.IsDeleted = true;
+                await _shopContext.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        public async Task<ProductDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default)
+        {
+            var product = await _shopContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+            return _mapper.Map<ProductDto>(product);
+        }
+
+        public async Task<PagedResult<ProductDto>> GetProductsAsync(string search, int? fromIndex = null, int? toIndex = null, CancellationToken cancellationToken = default)
         {
             var query = _shopContext.Products.AsQueryable();
             if (!string.IsNullOrWhiteSpace(search))
@@ -39,7 +68,18 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
             }
 
             var items = await query.ToArrayAsync(cancellationToken);
-            return new PagedResult<Product> { Items = items, Total = total };
+            return new PagedResult<ProductDto> { Items = _mapper.Map<IEnumerable<ProductDto>>(items), Total = total };
+        }
+
+        public async Task<ProductDto> UpdateProductAsync(ProductDto product, CancellationToken cancellationToken = default)
+        {
+            var update = await _shopContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id, cancellationToken);
+            if (update != null)
+            {
+                _mapper.Map(product, update);
+            }
+            await _shopContext.SaveChangesAsync(cancellationToken);
+            return product;
         }
     }
 }

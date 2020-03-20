@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Data\Traning.AspNetCore.EntityFramework.Data.csproj" />
   </ItemGroup>
 

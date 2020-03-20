@@ -20,6 +20,8 @@ namespace Traning.AspNetCore.EntityFramework.API
             modelBuilder.Entity<Product>()
                 .Property(x => x.Id)
                 .ValueGeneratedOnAdd();
+            modelBuilder.Entity<Product>()
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }
