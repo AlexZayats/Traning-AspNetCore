@@ -60,9 +60,10 @@ namespace Traning.AspNetCore.EntityFramework.API.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> DeleteAsync(
             Guid productId,
+            [FromQuery] bool force = false,
             CancellationToken cancellationToken = default)
         {
-            await _productManager.DeleteProductAsync(productId, cancellationToken);
+            await _productManager.DeleteProductAsync(productId, force, cancellationToken);
             return Ok();
         }
     }

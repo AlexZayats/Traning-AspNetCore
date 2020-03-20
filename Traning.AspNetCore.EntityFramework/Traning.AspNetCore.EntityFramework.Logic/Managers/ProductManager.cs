@@ -31,12 +31,19 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
             return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task DeleteProductAsync(Guid productId, CancellationToken cancellationToken = default)
+        public async Task DeleteProductAsync(Guid productId, bool force, CancellationToken cancellationToken = default)
         {
-            var product = await _shopContext.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+            var product = await _shopContext.Products.IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
             if (product != null)
             {
-                product.IsDeleted = true;
+                if (force)
+                {
+                    _shopContext.Products.Remove(product);
+                }
+                else
+                {
+                    product.IsDeleted = true;
+                }
                 await _shopContext.SaveChangesAsync(cancellationToken);
             }
         }

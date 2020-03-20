@@ -11,6 +11,6 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Interfaces
         Task<ProductDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default);
         Task<ProductDto> CreateProductAsync(ProductDto product, CancellationToken cancellationToken = default);
         Task<ProductDto> UpdateProductAsync(ProductDto product, CancellationToken cancellationToken = default);
-        Task DeleteProductAsync(Guid productId, CancellationToken cancellationToken = default);
+        Task DeleteProductAsync(Guid productId, bool force, CancellationToken cancellationToken = default);
     }
 }
