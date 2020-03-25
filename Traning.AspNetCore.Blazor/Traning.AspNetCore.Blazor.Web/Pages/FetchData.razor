@@ -1,0 +1,43 @@
+﻿@page "/fetchdata"
+
+@using Traning.AspNetCore.Blazor.Web.Data
+@using Traning.AspNetCore.EntityFramework.Logic.Models
+@inject ProductsService ProductsService
+
+<h1>Products</h1>
+
+@if (result == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in result.Items)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.TotalPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private PagedResult<ProductDto> result;
+
+    protected override async Task OnInitializedAsync()
+    {
+        result = await ProductsService.GetProducts();
+    }
+}
