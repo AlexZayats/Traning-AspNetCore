@@ -1,8 +1,10 @@
-﻿@page "/fetchdata"
+﻿@page "/products"
 
 @using Traning.AspNetCore.Blazor.Web.Data
 @using Traning.AspNetCore.EntityFramework.Logic.Models
+
 @inject ProductsService ProductsService
+@inject NavigationManager NavigationManager
 
 <h1>Products</h1>
 
@@ -24,13 +26,14 @@ else
             @foreach (var product in result.Items)
             {
                 <tr>
-                    <td>@product.Name</td>
+                    <td><a href="/product/@product.Id">@product.Name</a></td>
                     <td>@product.Description</td>
                     <td>@product.TotalPrice</td>
                 </tr>
             }
         </tbody>
     </table>
+    <button type="button" class="btn btn-primary" @onclick="CreateClick">Create</button>
 }
 
 @code {
@@ -39,5 +42,10 @@ else
     protected override async Task OnInitializedAsync()
     {
         result = await ProductsService.GetProducts();
+    }
+
+    protected void CreateClick()
+    {
+        NavigationManager.NavigateTo("/product");
     }
 }

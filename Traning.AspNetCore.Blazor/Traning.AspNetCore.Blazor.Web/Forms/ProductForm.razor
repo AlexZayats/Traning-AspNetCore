@@ -1,0 +1,64 @@
+﻿@using Traning.AspNetCore.Blazor.Web.Data
+@using Traning.AspNetCore.EntityFramework.Logic.Models
+
+@inject ProductsService ProductsService
+@inject NavigationManager NavigationManager
+
+@if (Product == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input id="name" type="text" class="form-control" @bind="Product.Name">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input id="description" type="text" class="form-control" @bind="Product.Description">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input id="price" type="number" class="form-control" @bind="Product.Price">
+        </div>
+        <div class="form-group">
+            <label for="discount">Discount</label>
+            <input id="discount" type="number" class="form-control" @bind="Product.Discount">
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="SaveAsync">Save</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public string ProductId { get; set; }
+
+    public ProductDto Product { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(ProductId))
+        {
+            Product = await ProductsService.GetProductAsync(ProductId);
+        }
+        else
+        {
+            Product = new ProductDto();
+        }
+    }
+
+    protected async Task SaveAsync()
+    {
+        if (!string.IsNullOrEmpty(ProductId))
+        {
+            Product = await ProductsService.UpdateProductAsync(Product);
+        }
+        else
+        {
+            Product = await ProductsService.CreateProductAsync(Product);
+            NavigationManager.NavigateTo($"/product/{Product.Id}");
+        }
+    }
+}

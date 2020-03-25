@@ -27,7 +27,7 @@ namespace Traning.AspNetCore.EntityFramework.Logic.Managers
             var add = _mapper.Map<Product>(product);
             _shopContext.Products.Add(add);
             await _shopContext.SaveChangesAsync(cancellationToken);
-            return _mapper.Map<ProductDto>(product);
+            return _mapper.Map<ProductDto>(add);
         }
 
         public async Task DeleteProductAsync(Guid productId, bool force, CancellationToken cancellationToken = default)

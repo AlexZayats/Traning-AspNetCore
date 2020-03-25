@@ -1,0 +1,11 @@
+﻿@page "/product"
+@page "/product/{ProductId}"
+
+@using Traning.AspNetCore.Blazor.Web.Forms;
+
+<h3>Product</h3>
+<ProductForm ProductId="@ProductId" />
+@code {
+    [Parameter]
+    public string ProductId { get; set; }
+}
