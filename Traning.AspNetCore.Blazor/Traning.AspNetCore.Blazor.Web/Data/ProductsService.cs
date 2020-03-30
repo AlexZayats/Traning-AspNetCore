@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,11 +14,16 @@ namespace Traning.AspNetCore.Blazor.Web.Data
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        public async Task<PagedResult<ProductDto>> GetProducts()
+        public async Task<PagedResult<ProductDto>> GetProducts(string search = default)
         {
             using (var client = new HttpClient())
             {
-                var response = await client.GetAsync("https://localhost:44327/products");
+                var url = "https://localhost:44327/products";
+                if (!string.IsNullOrEmpty(search))
+                {
+                    url += $"?search={Uri.EscapeUriString(search)}";
+                }
+                var response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
