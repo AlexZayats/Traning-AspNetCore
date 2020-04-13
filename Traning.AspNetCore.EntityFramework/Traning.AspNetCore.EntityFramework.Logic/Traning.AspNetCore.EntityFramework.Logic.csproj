@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Data\Traning.AspNetCore.EntityFramework.Data.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.EntityFramework.Models\Traning.AspNetCore.EntityFramework.Models.csproj" />
   </ItemGroup>
 
 </Project>
