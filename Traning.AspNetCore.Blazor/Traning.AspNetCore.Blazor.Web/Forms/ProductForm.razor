@@ -10,25 +10,28 @@
 }
 else
 {
-    <form>
+    <EditForm Model="@Product" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
         <div class="form-group">
             <label for="name">Name</label>
-            <input id="name" type="text" class="form-control" @bind="Product.Name">
+            <InputText id="name" class="form-control" @bind-Value="Product.Name" />
+            <ValidationMessage For="@(() => Product.Name)" />
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <input id="description" type="text" class="form-control" @bind="Product.Description">
+            <InputText id="description" class="form-control" @bind-Value="Product.Description" />
+            <ValidationMessage For="@(() => Product.Description)" />
         </div>
         <div class="form-group">
             <label for="price">Price</label>
-            <input id="price" type="number" class="form-control" @bind="Product.Price">
+            <InputNumber id="price" class="form-control" @bind-Value="Product.Price" />
         </div>
         <div class="form-group">
             <label for="discount">Discount</label>
-            <input id="discount" type="number" class="form-control" @bind="Product.Discount">
+            <InputNumber id="discount" class="form-control" @bind-Value="Product.Discount" />
         </div>
-        <button type="button" class="btn btn-primary" @onclick="SaveAsync">Save</button>
-    </form>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
 }
 
 @code {
@@ -49,7 +52,7 @@ else
         }
     }
 
-    protected async Task SaveAsync()
+    protected async Task HandleValidSubmit()
     {
         if (!string.IsNullOrEmpty(ProductId))
         {
