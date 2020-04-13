@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net.Http;
 using Traning.AspNetCore.Blazor.Web.Data;
 
 namespace Traning.AspNetCore.Blazor.Web
@@ -22,6 +23,7 @@ namespace Traning.AspNetCore.Blazor.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<HttpClient>();
             services.AddSingleton<ProductsService>();
         }
 

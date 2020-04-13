@@ -14,71 +14,66 @@ namespace Traning.AspNetCore.Blazor.Web.Data
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
+        private readonly HttpClient _httpClient;
+
+        public ProductsService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public async Task<PagedResult<ProductDto>> GetProducts(string search = default)
         {
-            using (var client = new HttpClient())
+            var url = "https://localhost:44327/products";
+            if (!string.IsNullOrEmpty(search))
             {
-                var url = "https://localhost:44327/products";
-                if (!string.IsNullOrEmpty(search))
-                {
-                    url += $"?search={Uri.EscapeUriString(search)}";
-                }
-                var response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<PagedResult<ProductDto>>(content, _options);
-                    return result;
-                }
-                return null;
+                url += $"?search={Uri.EscapeUriString(search)}";
             }
+            var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<PagedResult<ProductDto>>(content, _options);
+                return result;
+            }
+            return null;
         }
 
         public async Task<ProductDto> GetProductAsync(string productId)
         {
-            using (var client = new HttpClient())
+            var response = await _httpClient.GetAsync($"https://localhost:44327/products/{productId}");
+            if (response.IsSuccessStatusCode)
             {
-                var response = await client.GetAsync($"https://localhost:44327/products/{productId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<ProductDto>(content, _options);
-                    return result;
-                }
-                return null;
+                var content = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ProductDto>(content, _options);
+                return result;
             }
+            return null;
         }
 
         public async Task<ProductDto> CreateProductAsync(ProductDto product)
         {
-            using (var client = new HttpClient())
+            var requestContent = new StringContent(JsonSerializer.Serialize(product, _options), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"https://localhost:44327/products", requestContent);
+            if (response.IsSuccessStatusCode)
             {
-                var requestContent = new StringContent(JsonSerializer.Serialize(product, _options), Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"https://localhost:44327/products", requestContent);
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<ProductDto>(responseContent, _options);
-                    return result;
-                }
-                return null;
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ProductDto>(responseContent, _options);
+                return result;
             }
+            return null;
         }
 
         public async Task<ProductDto> UpdateProductAsync(ProductDto product)
         {
-            using (var client = new HttpClient())
+            var requestContent = new StringContent(JsonSerializer.Serialize(product, _options), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"https://localhost:44327/products", requestContent);
+            if (response.IsSuccessStatusCode)
             {
-                var requestContent = new StringContent(JsonSerializer.Serialize(product, _options), Encoding.UTF8, "application/json");
-                var response = await client.PutAsync($"https://localhost:44327/products", requestContent);
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var result = JsonSerializer.Deserialize<ProductDto>(responseContent, _options);
-                    return result;
-                }
-                return null;
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ProductDto>(responseContent, _options);
+                return result;
             }
+            return null;
         }
     }
 }
