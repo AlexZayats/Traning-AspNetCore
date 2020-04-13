@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Traning.AspNetCore.EntityFramework\Traning.AspNetCore.EntityFramework.Logic\Traning.AspNetCore.EntityFramework.Logic.csproj" />
+    <ProjectReference Include="..\..\Traning.AspNetCore.EntityFramework\Traning.AspNetCore.EntityFramework.Models\Traning.AspNetCore.EntityFramework.Models.csproj" />
   </ItemGroup>
 
 </Project>
