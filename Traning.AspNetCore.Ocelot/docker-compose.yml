@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  traning.aspnetcore.ocelot.gateway:
+    image: ${DOCKER_REGISTRY-}traningaspnetcoreocelotgateway
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Ocelot.Gateway/Dockerfile
+  traning.aspnetcore.ocelot.web:
+    image: ${DOCKER_REGISTRY-}traningaspnetcoreocelotweb
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Ocelot.Web/Dockerfile
+  traning.aspnetcore.ocelot.first.api:
+    image: ${DOCKER_REGISTRY-}traningaspnetcoreocelotfirstapi
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Ocelot.First.API/Dockerfile
+  traning.aspnetcore.ocelot.second.api:
+    image: ${DOCKER_REGISTRY-}traningaspnetcoreocelotsecondapi
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Ocelot.Second.API/Dockerfile
