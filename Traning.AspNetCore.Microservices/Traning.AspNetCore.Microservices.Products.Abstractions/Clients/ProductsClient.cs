@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Traning.AspNetCore.Microservices.Products.Abstractions.Models;
@@ -10,6 +11,8 @@ namespace Traning.AspNetCore.Microservices.Products.Abstractions.Clients
 {
     public class ProductsClient : IProductsClient
     {
+        private const string URL = "products";
+
         private readonly HttpClient _httpClient;
 
         public ProductsClient(HttpClient httpClient)
@@ -17,25 +20,9 @@ namespace Traning.AspNetCore.Microservices.Products.Abstractions.Clients
             _httpClient = httpClient;
         }
 
-        public Task<Guid> CreateProductAsync(ProductCreateDto product, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteProductAsync(Guid productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ProductViewDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<ProductViewDto>> GetProductsAsync(CancellationToken cancellationToken = default)
         {
-            var url = "products";
-            using (var response = await _httpClient.GetAsync(url, cancellationToken))
+            using (var response = await _httpClient.GetAsync(URL, cancellationToken))
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
@@ -44,9 +31,54 @@ namespace Traning.AspNetCore.Microservices.Products.Abstractions.Clients
             }
         }
 
-        public Task UpdateProductAsync(ProductViewDto product, CancellationToken cancellationToken = default)
+        public async Task<ProductViewDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using (var response = await _httpClient.GetAsync($"{URL}/{productId}", cancellationToken))
+            {
+                var responseString = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
+                var result = JsonConvert.DeserializeObject<ProductViewDto>(responseString);
+                return result;
+            }
+        }
+
+        public async Task<Guid> CreateProductAsync(ProductCreateDto product, CancellationToken cancellationToken = default)
+        {
+            if (product == null) throw new ArgumentNullException(nameof(product));
+            using (var request = new HttpRequestMessage(HttpMethod.Post, URL))
+            {
+                var data = JsonConvert.SerializeObject(product);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/json");
+                using (var response = await _httpClient.SendAsync(request, cancellationToken))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<Guid>(content);
+                }
+            }
+        }
+
+        public async Task UpdateProductAsync(ProductViewDto product, CancellationToken cancellationToken = default)
+        {
+            if (product == null) throw new ArgumentNullException(nameof(product));
+            using (var request = new HttpRequestMessage(HttpMethod.Put, URL))
+            {
+                var data = JsonConvert.SerializeObject(product);
+                request.Content = new StringContent(data, Encoding.UTF8, "application/json");
+                using (var response = await _httpClient.SendAsync(request, cancellationToken))
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+        }
+
+        public async Task DeleteProductAsync(Guid productId, CancellationToken cancellationToken = default)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Delete, $"{URL}/{productId}"))
+            using (var response = await _httpClient.SendAsync(request, cancellationToken))
+            {
+                response.EnsureSuccessStatusCode();
+            }
         }
     }
 }

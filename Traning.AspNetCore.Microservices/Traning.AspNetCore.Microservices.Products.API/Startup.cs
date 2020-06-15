@@ -40,12 +40,7 @@ namespace Traning.AspNetCore.Microservices.Products.API
             services.AddJaeger();
             services.AddPipelineBehavior();
 
-            var mappingConfig = new MapperConfiguration(c =>
-            {
-                c.AddProfile<ProductProfile>();
-            });
-            var mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            services.AddAutoMapper(typeof(ProductProfile).Assembly);
             services.AddMediatR(typeof(ProductsViewQueryHandler).GetTypeInfo().Assembly);
         }
 
