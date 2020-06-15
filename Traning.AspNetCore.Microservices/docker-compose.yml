@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  traning.microservices.products:
+    image: ${DOCKER_REGISTRY-}traning.microservices.products
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Microservices.Products.API/Dockerfile
+  traning.microservices.jaeger:
+    image: jaegertracing/all-in-one:latest
