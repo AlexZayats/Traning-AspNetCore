@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using OpenTracing;
+using OpenTracing.Tag;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -12,10 +17,31 @@ namespace Microsoft.AspNetCore.Builder
             {
                 errorApp.Run(async context =>
                 {
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                    var tracer = context.RequestServices.GetRequiredService<ITracer>();
+                    Tags.Error.Set(tracer.ActiveSpan, true);
+
+                    if (exceptionHandlerPathFeature.Error is ValidationException validationException)
                     {
-                        context.TraceIdentifier,
-                    }));
+                        context.Response.StatusCode = 400;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                        {
+                            context.TraceIdentifier,
+                            validationException.Message,
+                            validationException.Errors
+                        }));
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                        {
+                            context.TraceIdentifier,
+                        }));
+                    }
                 });
             });
             return app;

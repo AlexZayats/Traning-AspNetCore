@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Ascetic.AspNetCore.Microservices.Pipeline;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using OpenTracing.Util;
 using Serilog;
 
@@ -36,6 +38,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 config.ClearProviders();
                 config.AddSerilog(dispose: true);
             });
+        }
+
+        public static IServiceCollection AddPipelineBehavior(this IServiceCollection services)
+        {
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestTraceBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            return services;
         }
     }
 }

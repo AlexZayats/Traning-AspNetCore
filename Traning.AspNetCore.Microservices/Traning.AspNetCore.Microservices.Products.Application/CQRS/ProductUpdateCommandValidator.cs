@@ -2,9 +2,9 @@
 
 namespace Traning.AspNetCore.Microservices.Products.Application.CQRS
 {
-    public class ProductCreateCommandValidator : AbstractValidator<ProductCreateCommand>
+    public class ProductUpdateCommandValidator : AbstractValidator<ProductUpdateCommand>
     {
-        public ProductCreateCommandValidator()
+        public ProductUpdateCommandValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Description).NotEmpty();

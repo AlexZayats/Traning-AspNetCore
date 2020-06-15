@@ -7,9 +7,10 @@ namespace Traning.AspNetCore.Microservices.Products.Application.CQRS
 {
     public class ProductCreateCommandHandler : IRequestHandler<ProductCreateCommand, Guid>
     {
-        public Task<Guid> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(ProductCreateCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            throw new NullReferenceException();
+            return Guid.NewGuid();
         }
     }
 }
