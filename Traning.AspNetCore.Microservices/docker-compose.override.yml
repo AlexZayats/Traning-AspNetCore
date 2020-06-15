@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  traning.microservices.products:
+  traning.microservices.catalog:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - JAEGER_SERVICE_NAME=products
+      - JAEGER_SERVICE_NAME=catalog
       - JAEGER_AGENT_HOST=traning.microservices.jaeger
       - JAEGER_AGENT_PORT=6831
       - JAEGER_SAMPLER_TYPE=const

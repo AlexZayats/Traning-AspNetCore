@@ -6,7 +6,7 @@
     <ProjectGuid>f2f38f44-dbbc-40b6-9dd3-5d451554e533</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>traning.microservices.products</DockerServiceName>
+    <DockerServiceName>traning.microservices.catalog</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
