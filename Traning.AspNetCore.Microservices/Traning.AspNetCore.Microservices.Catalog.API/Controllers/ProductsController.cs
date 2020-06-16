@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +11,7 @@ using Traning.AspNetCore.Microservices.Catalog.Application.CQRS;
 
 namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -28,6 +30,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<ProductViewDto[]>> GetProductsAsync(CancellationToken cancellationToken = default)
         {
+            var t = Request.HttpContext.User;
             var result = await _mediator.Send(new ProductsViewQuery(), cancellationToken);
             return Ok(result);
         }
@@ -50,11 +53,12 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
             return CreatedAtRoute(nameof(GetProductAsync), new { productId = result }, result);
         }
 
-        [HttpPut(Name = nameof(UpdateProductAsync))]
+        [HttpPut("{productId}", Name = nameof(UpdateProductAsync))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> UpdateProductAsync([FromBody] ProductCreateDto model, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> UpdateProductAsync(Guid productId, [FromBody] ProductCreateDto model, CancellationToken cancellationToken = default)
         {
             var command = _mapper.Map<ProductUpdateCommand>(model);
+            command.ProductId = productId;
             await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
