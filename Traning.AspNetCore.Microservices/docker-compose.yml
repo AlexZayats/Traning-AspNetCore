@@ -8,3 +8,5 @@ services:
       dockerfile: Traning.AspNetCore.Microservices.Catalog.API/Dockerfile
   traning.microservices.jaeger:
     image: jaegertracing/all-in-one:latest
+  traning.microservices.database:
+    image: "mcr.microsoft.com/mssql/server"

@@ -17,6 +17,9 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.1.0" />
     <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.6.2" />
@@ -27,6 +30,7 @@
     <ProjectReference Include="..\Ascetic.AspNetCore.Microservices\Ascetic.AspNetCore.Microservices.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Abstractions\Traning.AspNetCore.Microservices.Catalog.Abstractions.csproj" />
     <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Application\Traning.AspNetCore.Microservices.Catalog.Application.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Data\Traning.AspNetCore.Microservices.Catalog.Data.csproj" />
   </ItemGroup>
 
 </Project>

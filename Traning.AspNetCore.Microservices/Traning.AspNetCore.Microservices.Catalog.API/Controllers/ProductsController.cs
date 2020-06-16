@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Models;
@@ -27,7 +26,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
         [HttpGet(Name = nameof(GetProductsAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<IEnumerable<ProductViewDto>>> GetProductsAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<ProductViewDto[]>> GetProductsAsync(CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(new ProductsViewQuery(), cancellationToken);
             return Ok(result);
@@ -44,7 +43,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
 
         [HttpPost(Name = nameof(CreateProductAsync))]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> CreateProductAsync(ProductCreateDto model, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> CreateProductAsync([FromBody] ProductCreateDto model, CancellationToken cancellationToken = default)
         {
             var command = _mapper.Map<ProductCreateCommand>(model);
             var result = await _mediator.Send(command, cancellationToken);
@@ -53,7 +52,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
 
         [HttpPut(Name = nameof(UpdateProductAsync))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> UpdateProductAsync(ProductCreateDto model, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> UpdateProductAsync([FromBody] ProductCreateDto model, CancellationToken cancellationToken = default)
         {
             var command = _mapper.Map<ProductUpdateCommand>(model);
             await _mediator.Send(command, cancellationToken);

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Models
+namespace Traning.AspNetCore.Microservices.Catalog.Domain.Entities
 {
-    public class ProductViewDto
+    public class Product
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

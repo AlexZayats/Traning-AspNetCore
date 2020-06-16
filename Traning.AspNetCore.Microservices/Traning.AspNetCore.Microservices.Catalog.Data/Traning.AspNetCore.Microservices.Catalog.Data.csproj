@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ascetic.EntityFrameworkCore\Ascetic.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Application\Traning.AspNetCore.Microservices.Catalog.Application.csproj" />
+    <ProjectReference Include="..\Traning.AspNetCore.Microservices.Catalog.Domain\Traning.AspNetCore.Microservices.Catalog.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

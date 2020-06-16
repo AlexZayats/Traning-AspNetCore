@@ -3,13 +3,16 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.IO;
 using System.Reflection;
+using Traning.AspNetCore.Microservices.Catalog.Application;
 using Traning.AspNetCore.Microservices.Catalog.Application.CQRS;
 using Traning.AspNetCore.Microservices.Catalog.Application.Mapping;
+using Traning.AspNetCore.Microservices.Catalog.Data;
 
 namespace Traning.AspNetCore.Microservices.Catalog.API
 {
@@ -24,6 +27,8 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddDbContext<ICatalogDbContext, CatalogDbContext>(options => options.UseSqlServer(Configuration["DATABASE"]));
             services
                 .AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ProductCreateCommandValidator>()); ;
@@ -40,6 +45,10 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             services.AddJaeger();
             services.AddPipelineBehavior();
 
+            services
+                .AddHealthChecks()
+                .AddDatabaseCheck<ICatalogDbContext, CatalogDbContext>(tags: new[] { "ready" });
+
             services.AddAutoMapper(typeof(ProductProfile).Assembly);
             services.AddMediatR(typeof(ProductsViewQueryHandler).GetTypeInfo().Assembly);
         }
@@ -47,6 +56,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMicroserviceExceptionHandler();
+            app.UseMicroserviceHealthChecks();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
@@ -55,10 +65,13 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             {
                 endpoints.MapControllers();
             });
-            app.UseSwagger();
-            app.UseSwaggerUI(o =>
+            app.UseSwagger(options => options.PreSerializeFilters.Add((swagger, request) =>
             {
-                o.SwaggerEndpoint("v1/swagger.json", "Catalog");
+                swagger.Servers.Add(new OpenApiServer { Url = $"{request.Scheme}://{request.Host.Value}{Configuration.GetValue("BASE_URL", string.Empty)}" });
+            }));
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("v1/swagger.json", "Catalog");
             });
         }
     }
