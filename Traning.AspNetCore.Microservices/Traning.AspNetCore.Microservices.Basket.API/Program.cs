@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Traning.AspNetCore.Microservices.Catalog.API.Infrastructure;
-using Traning.AspNetCore.Microservices.Catalog.Application;
+using Traning.AspNetCore.Microservices.Basket.API.Infrastructure;
+using Traning.AspNetCore.Microservices.Basket.Application;
 
-namespace Traning.AspNetCore.Microservices.Catalog.API
+namespace Traning.AspNetCore.Microservices.Basket.API
 {
     public class Program
     {
@@ -16,8 +16,8 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ICatalogDbContext>();
-                var concreteContext = (CatalogDbContext)context;
+                var context = services.GetRequiredService<IBasketDbContext>();
+                var concreteContext = (BasketDbContext)context;
                 concreteContext.Database.Migrate();
             }
             host.Run();

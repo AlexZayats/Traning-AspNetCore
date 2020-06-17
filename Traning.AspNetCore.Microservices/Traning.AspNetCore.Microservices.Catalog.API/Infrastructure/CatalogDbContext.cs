@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Traning.AspNetCore.Microservices.Catalog.API.Infrastructure.EntityConfigurations;
 using Traning.AspNetCore.Microservices.Catalog.Application;
-using Traning.AspNetCore.Microservices.Catalog.Data.EntityConfigurations;
 using Traning.AspNetCore.Microservices.Catalog.Domain.Entities;
 
-namespace Traning.AspNetCore.Microservices.Catalog.Data
+namespace Traning.AspNetCore.Microservices.Catalog.API.Infrastructure
 {
     public class CatalogDbContext : DbContext, ICatalogDbContext
     {

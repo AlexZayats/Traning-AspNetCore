@@ -28,10 +28,9 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
         [HttpGet(Name = nameof(GetProductsAsync))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult<ProductViewDto[]>> GetProductsAsync(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<ProductViewDto[]>> GetProductsAsync([FromQuery] Guid[] productIds, CancellationToken cancellationToken = default)
         {
-            var t = Request.HttpContext.User;
-            var result = await _mediator.Send(new ProductsViewQuery(), cancellationToken);
+            var result = await _mediator.Send(new ProductsViewQuery { ProductIds = productIds }, cancellationToken);
             return Ok(result);
         }
 
@@ -55,7 +54,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API.Controllers
 
         [HttpPut("{productId}", Name = nameof(UpdateProductAsync))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> UpdateProductAsync(Guid productId, [FromBody] ProductCreateDto model, CancellationToken cancellationToken = default)
+        public async Task<ActionResult> UpdateProductAsync(Guid productId, [FromBody] ProductUpdateDto model, CancellationToken cancellationToken = default)
         {
             var command = _mapper.Map<ProductUpdateCommand>(model);
             command.ProductId = productId;

@@ -8,7 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Traning.AspNetCore.Microservices.Catalog.API/Traning.AspNetCore.Microservices.Catalog.API.csproj", "Traning.AspNetCore.Microservices.Catalog.API/"]
-COPY ["Ascetic.AspNetCore.Microservices/Ascetic.AspNetCore.Microservices.csproj", "Ascetic.AspNetCore.Microservices/"]
 RUN dotnet restore "Traning.AspNetCore.Microservices.Catalog.API/Traning.AspNetCore.Microservices.Catalog.API.csproj"
 COPY . .
 WORKDIR "/src/Traning.AspNetCore.Microservices.Catalog.API"

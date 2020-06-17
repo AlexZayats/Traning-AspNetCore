@@ -1,3 +1,6 @@
+using Ascetic.AspNetCore.Microservices.DelegatingHandlers;
+using Ascetic.AspNetCore.Microservices.Managers;
+using Ascetic.Microservices.Application.Managers;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -14,12 +17,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Traning.AspNetCore.Microservices.Catalog.API.Infrastructure;
-using Traning.AspNetCore.Microservices.Catalog.Application;
-using Traning.AspNetCore.Microservices.Catalog.Application.CQRS;
-using Traning.AspNetCore.Microservices.Catalog.Application.Mapping;
+using Traning.AspNetCore.Microservices.Basket.API.Infrastructure;
+using Traning.AspNetCore.Microservices.Basket.Application;
+using Traning.AspNetCore.Microservices.Basket.Application.CQRS;
+using Traning.AspNetCore.Microservices.Basket.Application.Mapping;
+using Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients;
 
-namespace Traning.AspNetCore.Microservices.Catalog.API
+namespace Traning.AspNetCore.Microservices.Basket.API
 {
     public class Startup
     {
@@ -33,9 +37,9 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddDbContext<ICatalogDbContext, CatalogDbContext>(options =>
+                .AddDbContext<IBasketDbContext, BasketDbContext>(options =>
                 {
-                    options.UseSqlServer(Configuration["DATABASE"] ?? Configuration.GetConnectionString("CatalogDbContext"));
+                    options.UseSqlServer(Configuration["DATABASE"] ?? Configuration.GetConnectionString("BasketDbContext"));
 #if DEBUG
                     options.EnableSensitiveDataLogging();
 #endif
@@ -51,11 +55,11 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             });
             services
                 .AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ProductCreateCommandValidator>());
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<BasketUpdateCommandValidation>());
             services
                 .AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Basket", Version = "v1" });
                     var assembly = Assembly.GetExecutingAssembly();
                     var apiXmlPath = Path.ChangeExtension(assembly.Location, "xml");
                     options.IncludeXmlComments(apiXmlPath, includeControllerXmlComments: true);
@@ -97,10 +101,16 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
 
             services
                 .AddHealthChecks()
-                .AddDatabaseCheck<ICatalogDbContext, CatalogDbContext>(tags: new[] { "ready" });
+                .AddDatabaseCheck<IBasketDbContext, BasketDbContext>(tags: new[] { "ready" });
 
-            services.AddAutoMapper(typeof(ProductProfile).Assembly);
-            services.AddMediatR(typeof(ProductsViewQueryHandler).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(BasketProfile).Assembly);
+            services.AddMediatR(typeof(BasketViewQueryHandler).GetTypeInfo().Assembly);
+
+            services.AddScoped<IUserContextManager, UserContextManager>();
+
+            services
+                .AddHttpClient<IProductsClient, ProductsClient>(client => client.BaseAddress = new Uri(Configuration["API_URL_CATALOG"]))
+                .AddHttpMessageHandler<AuthorizationHeaderHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -121,7 +131,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.API
             app.UseSwaggerUI(options =>
             {
                 options.OAuthClientId(Configuration["AzureAd:ClientId"]);
-                options.SwaggerEndpoint("v1/swagger.json", "Catalog");
+                options.SwaggerEndpoint("v1/swagger.json", "Basket");
             });
         }
     }

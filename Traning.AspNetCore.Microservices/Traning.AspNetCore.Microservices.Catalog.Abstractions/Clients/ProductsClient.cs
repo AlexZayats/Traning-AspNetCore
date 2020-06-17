@@ -20,9 +20,14 @@ namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<ProductViewDto>> GetProductsAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<ProductViewDto>> GetProductsAsync(Guid[] productIds = default, CancellationToken cancellationToken = default)
         {
-            using (var response = await _httpClient.GetAsync(URL, cancellationToken))
+            var uriBuilder = new UriBuilder(URL);
+            if (productIds != null)
+            {
+                uriBuilder.Query += $"productIds={string.Join(",", productIds)}";
+            }
+            using (var response = await _httpClient.GetAsync(uriBuilder.Uri, cancellationToken))
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();

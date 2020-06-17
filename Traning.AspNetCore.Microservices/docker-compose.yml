@@ -1,6 +1,11 @@
 version: '3.4'
 
 services:
+  traning.microservices.basket:
+    image: ${DOCKER_REGISTRY-}traning.microservices.basket
+    build:
+      context: .
+      dockerfile: Traning.AspNetCore.Microservices.Basket.API/Dockerfile
   traning.microservices.catalog:
     image: ${DOCKER_REGISTRY-}traning.microservices.catalog
     build:

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Traning.AspNetCore.Microservices.Catalog.Domain.Entities;
 
-namespace Traning.AspNetCore.Microservices.Catalog.Data.EntityConfigurations
+namespace Traning.AspNetCore.Microservices.Catalog.API.Infrastructure.EntityConfigurations
 {
     public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
