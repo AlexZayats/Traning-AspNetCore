@@ -8,7 +8,7 @@ namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
 {
     public interface IProductsClient
     {
-        Task<IEnumerable<ProductViewDto>> GetProductsAsync(Guid[] productIds = default, CancellationToken cancellationToken = default);
+        Task<ProductViewDto[]> GetProductsAsync(Guid[] productIds = default, CancellationToken cancellationToken = default);
         Task<ProductViewDto> GetProductAsync(Guid productId, CancellationToken cancellationToken = default);
         Task<Guid> CreateProductAsync(ProductCreateDto product, CancellationToken cancellationToken = default);
         Task UpdateProductAsync(ProductViewDto product, CancellationToken cancellationToken = default);

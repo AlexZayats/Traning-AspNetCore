@@ -6,7 +6,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
     {
         public BasketUpdateCommandValidation()
         {
-            RuleFor(x => x.ProductIds).NotEmpty();
+            RuleFor(x => x.ProductIds).NotNull();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Traning.AspNetCore.Microservices.Basket.API.Infrastructure.EntityConfi
         public void Configure(EntityTypeBuilder<CustomerBasket> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Products).WithOne().HasForeignKey(x => x.ProductId).IsRequired();
+            builder.HasMany(x => x.Products).WithOne().HasForeignKey(x => x.BasketId).IsRequired();
             builder.Property(x => x.CustomerEmail).IsRequired();
         }
     }

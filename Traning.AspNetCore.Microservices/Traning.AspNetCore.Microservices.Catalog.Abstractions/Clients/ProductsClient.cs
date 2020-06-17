@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Traning.AspNetCore.Microservices.Catalog.Abstractions.Models;
 
 namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
@@ -20,18 +22,26 @@ namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<ProductViewDto>> GetProductsAsync(Guid[] productIds = default, CancellationToken cancellationToken = default)
+        public async Task<ProductViewDto[]> GetProductsAsync(Guid[] productIds = default, CancellationToken cancellationToken = default)
         {
-            var uriBuilder = new UriBuilder(URL);
+            var uri = URL;
+            var query = new NameValueCollection();
             if (productIds != null)
             {
-                uriBuilder.Query += $"productIds={string.Join(",", productIds)}";
+                foreach (var productId in productIds)
+                {
+                    query.Add("productIds", productId.ToString());
+                }
             }
-            using (var response = await _httpClient.GetAsync(uriBuilder.Uri, cancellationToken))
+            if (query.Count > 0)
+            {
+                uri += ToQueryString(query);
+            }
+            using (var response = await _httpClient.GetAsync(uri, cancellationToken))
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
-                var result = JsonConvert.DeserializeObject<IEnumerable<ProductViewDto>>(responseString);
+                var result = JsonConvert.DeserializeObject<ProductViewDto[]>(responseString);
                 return result;
             }
         }
@@ -84,6 +94,15 @@ namespace Traning.AspNetCore.Microservices.Catalog.Abstractions.Clients
             {
                 response.EnsureSuccessStatusCode();
             }
+        }
+
+        private string ToQueryString(NameValueCollection nvc)
+        {
+            var array = (
+                from key in nvc.AllKeys
+                from value in nvc.GetValues(key)
+                select string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(value))).ToArray();
+            return "?" + string.Join("&", array);
         }
     }
 }

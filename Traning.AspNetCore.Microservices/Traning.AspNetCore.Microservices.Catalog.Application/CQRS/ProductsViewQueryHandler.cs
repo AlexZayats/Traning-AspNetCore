@@ -19,14 +19,14 @@ namespace Traning.AspNetCore.Microservices.Catalog.Application.CQRS
             _mapper = mapper;
         }
 
-        public Task<ProductViewDto[]> Handle(ProductsViewQuery request, CancellationToken cancellationToken)
+        public async Task<ProductViewDto[]> Handle(ProductsViewQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Products.AsQueryable().AsNoTracking();
-            if (request.ProductIds.Any())
+            if (request.ProductIds != null)
             {
                 query = query.Where(x => request.ProductIds.Contains(x.Id));
             }
-            return _mapper.ProjectTo<ProductViewDto>(query).ToArrayAsync(cancellationToken);
+            return await _mapper.ProjectTo<ProductViewDto>(query).ToArrayAsync(cancellationToken);
         }
     }
 }

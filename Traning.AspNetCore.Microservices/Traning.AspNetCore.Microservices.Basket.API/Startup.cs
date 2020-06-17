@@ -108,6 +108,7 @@ namespace Traning.AspNetCore.Microservices.Basket.API
 
             services.AddScoped<IUserContextManager, UserContextManager>();
 
+            services.AddTransient<AuthorizationHeaderHandler>();
             services
                 .AddHttpClient<IProductsClient, ProductsClient>(client => client.BaseAddress = new Uri(Configuration["API_URL_CATALOG"]))
                 .AddHttpMessageHandler<AuthorizationHeaderHandler>();

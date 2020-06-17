@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Traning.AspNetCore.Microservices.Basket.Domain.Entities;
@@ -23,7 +22,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
         public async Task<Unit> Handle(BasketUpdateCommand request, CancellationToken cancellationToken)
         {
             var currentUser = _userContextManager.GetCurrentUser();
-            var customerEmail = currentUser.FindFirst(ClaimTypes.Email).Value;
+            var customerEmail = currentUser.FindFirst("preferred_username").Value;
             var basket = await _context.CustomerBaskets.Include(x => x.Products).FirstOrDefaultAsync(x => x.CustomerEmail == customerEmail, cancellationToken);
             if (basket == null)
             {
@@ -32,6 +31,7 @@ namespace Traning.AspNetCore.Microservices.Basket.Application.CQRS
                     CustomerEmail = customerEmail,
                     Products = new List<CustomerBasketProduct>()
                 };
+                _context.CustomerBaskets.Add(basket);
             }
             basket.Products.Clear();
             foreach (var productId in request.ProductIds)

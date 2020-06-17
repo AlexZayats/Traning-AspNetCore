@@ -6,7 +6,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - DATABASE=Server=traning.microservices.database;Database=Basket_DB;User=sa;Password=My_P@ssword_123;
-      - API_URL_CATALOG=traning.microservices.catalog
+      - API_URL_CATALOG=http://traning.microservices.catalog
       - JAEGER_SERVICE_NAME=basket
       - JAEGER_AGENT_HOST=traning.microservices.jaeger
       - JAEGER_AGENT_PORT=6831
